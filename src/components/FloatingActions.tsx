@@ -5,12 +5,14 @@ interface FloatingActionsProps {
   onHistoryClick: () => void;
   onSettingsClick: () => void;
   isSignedIn?: boolean;
+  onSignOut?: () => void;
 }
 
 export const FloatingActions = ({
   onHistoryClick,
   onSettingsClick,
   isSignedIn = false,
+  onSignOut,
 }: FloatingActionsProps) => {
   return (
     <div className="fixed top-4 right-4 flex gap-2 z-50">
@@ -21,8 +23,9 @@ export const FloatingActions = ({
         <Settings className="h-4 w-4" />
       </Button>
       {isSignedIn ? (
-        <Button variant="outline" size="sm" className="rounded-xl">
-          <User className="h-4 w-4" />
+        <Button variant="outline" size="sm" onClick={onSignOut} className="rounded-xl">
+          <User className="h-4 w-4 mr-2" />
+          Sign Out
         </Button>
       ) : (
         <>
