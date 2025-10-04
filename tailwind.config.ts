@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Noto Sans', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -56,6 +59,14 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        "user-message": {
+          DEFAULT: "hsl(var(--user-message))",
+          foreground: "hsl(var(--user-message-foreground))",
+        },
+        "ai-message": {
+          DEFAULT: "hsl(var(--ai-message))",
+          foreground: "hsl(var(--ai-message-foreground))",
         },
       },
       borderRadius: {
