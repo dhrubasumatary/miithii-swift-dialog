@@ -36,13 +36,30 @@ const Index = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const initializeAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate("/auth");
       } else {
         setUser(session.user);
+        
+        // Load user's language preference
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('language')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (profile?.language) {
+          setSelectedLanguage(profile.language);
+        } else {
+          // Show language picker if no preference exists
+          setShowLanguagePicker(true);
+        }
       }
-    });
+    };
+
+    initializeAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!session) {
@@ -64,6 +81,13 @@ const Index = () => {
   }, [messages]);
 
   const handleSendMessage = async (content: string) => {
+    // Check if language is selected before allowing message
+    if (!selectedLanguage) {
+      setShowLanguagePicker(true);
+      toast.error('Please select a language first');
+      return;
+    }
+
     const userMessage: Message = {
       id: Date.now(),
       content,
@@ -71,13 +95,6 @@ const Index = () => {
     };
 
     setMessages((prev) => [...prev, userMessage]);
-
-    // Show language picker after first user message if language not selected
-    if (!selectedLanguage && messages.filter((m) => m.isUser).length === 0) {
-      setShowLanguagePicker(true);
-      return;
-    }
-
     setIsStreaming(true);
 
     // Create conversation history for AI
@@ -137,10 +154,30 @@ const Index = () => {
     });
   };
 
-  const handleLanguageSelect = (language: string) => {
+  const handleLanguageSelect = async (language: string) => {
     setSelectedLanguage(language);
     setShowLanguagePicker(false);
-    toast.success(`Language set to ${language}`);
+    
+    // Save language preference to database
+    if (user) {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ language })
+        .eq('id', user.id);
+      
+      if (error) {
+        console.error('Error saving language preference:', error);
+        toast.error('Failed to save language preference');
+      } else {
+        toast.success(`Language set to ${
+          language === "english"
+            ? "English"
+            : language === "assamese"
+            ? "Assamese"
+            : "Bodo"
+        }`);
+      }
+    }
 
     setTimeout(() => {
       setMessages((prev) => [
@@ -168,7 +205,7 @@ const Index = () => {
         isUser: false,
       },
     ]);
-    setSelectedLanguage(null);
+    // Keep the selected language (don't reset it)
     setShowLanguagePicker(false);
     setHistoryOpen(false);
     toast.success("New chat started");
@@ -193,28 +230,28 @@ const Index = () => {
       />
 
       <main className="flex-1 flex flex-col max-w-4xl w-full mx-auto px-4 pt-24 pb-4">
-        <div className="flex-1 flex flex-col gap-6 overflow-y-auto mb-6 pr-2">
-          {messages.map((message) => (
-            <ChatMessage
-              key={message.id}
-              content={message.content}
-              isUser={message.isUser}
-              isLoading={message.isLoading}
-            />
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {showLanguagePicker && (
-          <div className="mb-6">
+        {showLanguagePicker ? (
+          <div className="flex-1 flex items-center justify-center">
             <LanguagePicker onLanguageSelect={handleLanguageSelect} />
+          </div>
+        ) : (
+          <div className="flex-1 flex flex-col gap-6 overflow-y-auto mb-6 pr-2">
+            {messages.map((message) => (
+              <ChatMessage
+                key={message.id}
+                content={message.content}
+                isUser={message.isUser}
+                isLoading={message.isLoading}
+              />
+            ))}
+            <div ref={messagesEndRef} />
           </div>
         )}
       </main>
 
       <ChatInput
         onSendMessage={handleSendMessage}
-        disabled={showLanguagePicker || isStreaming}
+        disabled={!selectedLanguage || isStreaming}
       />
 
       <HistoryModal
