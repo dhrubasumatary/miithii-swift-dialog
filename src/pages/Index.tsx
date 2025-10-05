@@ -192,8 +192,8 @@ const Index = () => {
         onSignOut={handleSignOut}
       />
 
-      <main className="flex-1 flex flex-col max-w-3xl w-full mx-auto px-4 pt-20 pb-4">
-        <div className="flex-1 flex flex-col gap-4 overflow-y-auto mb-4">
+      <main className="flex-1 flex flex-col max-w-4xl w-full mx-auto px-4 pt-24 pb-4">
+        <div className="flex-1 flex flex-col gap-6 overflow-y-auto mb-6 pr-2">
           {messages.map((message) => (
             <ChatMessage
               key={message.id}
@@ -206,7 +206,7 @@ const Index = () => {
         </div>
 
         {showLanguagePicker && (
-          <div className="mb-4">
+          <div className="mb-6">
             <LanguagePicker onLanguageSelect={handleLanguageSelect} />
           </div>
         )}

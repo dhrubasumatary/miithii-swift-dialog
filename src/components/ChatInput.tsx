@@ -20,23 +20,23 @@ export const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
   };
 
   return (
-    <div className="sticky bottom-0 border-t bg-background/80 backdrop-blur-md py-4">
+    <div className="sticky bottom-0 glass-strong py-6">
       <div className="max-w-3xl mx-auto px-4">
-        <form onSubmit={handleSubmit} className="flex gap-2">
+        <form onSubmit={handleSubmit} className="flex gap-3">
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message to Miithii..."
             disabled={disabled}
-            className="flex-1 rounded-xl"
+            className="flex-1 rounded-2xl h-12 px-5 shadow-soft border-border/50 focus:shadow-elegant focus:border-primary/50 transition-all duration-300"
           />
           <Button
             type="submit"
             disabled={disabled || !message.trim()}
-            className="rounded-xl px-6"
+            className="rounded-2xl px-8 h-12 shadow-elegant hover:shadow-lg transition-all duration-300"
             size="default"
           >
-            <Send className="h-4 w-4" />
+            <Send className="h-5 w-5" />
           </Button>
         </form>
       </div>

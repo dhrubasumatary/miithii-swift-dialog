@@ -92,62 +92,66 @@ const Auth = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md space-y-8">
+      <div className="w-full max-w-md space-y-8 animate-fade-in">
         <div className="text-center">
-          <h1 className="text-3xl font-bold">Miithii</h1>
-          <p className="mt-2 text-muted-foreground">
+          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-glow mb-3">
+            Miithii
+          </h1>
+          <p className="text-lg text-muted-foreground">
             {isLogin ? "Welcome back" : "Create your account"}
           </p>
         </div>
 
-        <form onSubmit={handleAuth} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+        <div className="glass-strong rounded-3xl p-8 shadow-elegant border-2 border-primary/10">
+          <form onSubmit={handleAuth} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-semibold">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                className="rounded-2xl h-12 shadow-soft border-border/50 focus:shadow-elegant focus:border-primary/50 transition-all duration-300"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-semibold">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+                className="rounded-2xl h-12 shadow-soft border-border/50 focus:shadow-elegant focus:border-primary/50 transition-all duration-300"
+                required
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full rounded-2xl h-12 text-base font-semibold shadow-elegant hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
               disabled={loading}
-              className="rounded-xl"
-              required
-            />
-          </div>
+            >
+              {loading ? "Loading..." : isLogin ? "Sign In" : "Sign Up"}
+            </Button>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+            <button
+              type="button"
+              onClick={() => setIsLogin(!isLogin)}
+              className="w-full text-center text-sm text-primary hover:text-primary-glow font-medium transition-colors duration-300"
               disabled={loading}
-              className="rounded-xl"
-              required
-            />
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full rounded-xl"
-            disabled={loading}
-          >
-            {loading ? "Loading..." : isLogin ? "Sign In" : "Sign Up"}
-          </Button>
-
-          <button
-            type="button"
-            onClick={() => setIsLogin(!isLogin)}
-            className="w-full text-center text-sm text-muted-foreground hover:text-foreground"
-            disabled={loading}
-          >
-            {isLogin
-              ? "Don't have an account? Sign up"
-              : "Already have an account? Sign in"}
-          </button>
-        </form>
+            >
+              {isLogin
+                ? "Don't have an account? Sign up"
+                : "Already have an account? Sign in"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
