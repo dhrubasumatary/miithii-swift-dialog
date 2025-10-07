@@ -1,5 +1,3 @@
-import { supabase } from "@/integrations/supabase/client";
-
 type Message = { role: "user" | "assistant"; content: string };
 
 export async function streamChat({
@@ -16,20 +14,12 @@ export async function streamChat({
   onError: (error: string) => void;
 }) {
   try {
-    const { data: sessionData } = await supabase.auth.getSession();
-    
-    if (!sessionData.session) {
-      onError("Please sign in to chat");
-      return;
-    }
-
     const response = await fetch(
       `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionData.session.access_token}`,
         },
         body: JSON.stringify({ messages, language }),
       }
